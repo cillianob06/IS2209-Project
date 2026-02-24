@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="19ad18b4-31e7-45b9-8a88-5be66d672f6a" name="Changes" comment="commit1">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/ci.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +74,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "#4 on new-branch",
+    "git-widget-placeholder": "#5 on new-branch",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/Users/cilli/PycharmProjects/IS2209-Project",
     "node.js.detected.package.eslint": "true",
@@ -150,7 +151,7 @@
       <workItem from="1771858468836" duration="1662000" />
       <workItem from="1771862307778" duration="1490000" />
       <workItem from="1771864220525" duration="177000" />
-      <workItem from="1771924248305" duration="6632000" />
+      <workItem from="1771924248305" duration="8154000" />
     </task>
     <task id="LOCAL-00001" summary="commit1">
       <option name="closed" value="true" />

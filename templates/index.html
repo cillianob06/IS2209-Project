@@ -1,55 +1,21 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="en">
 <head>
-    <title>Weather Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            background-color: #f4f4f4;
-        }
-
-        h1 {
-            color: #333;
-        }
-
-        .card {
-            background: white;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-
-        .city {
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .temp {
-            font-size: 18px;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <title>Random Dog</title>
 </head>
 <body>
+    <h1>Random Dog Image</h1>
+    <button id="fetchDog">Get Dog</button>
+    <br><br>
+    <img id="dogImage" width="400" alt="Random Dog">
 
-<h1>Weather Dashboard</h1>
-
-{% for item in results %}
-    <div class="card">
-        <div class="city">{{ item.city }}</div>
-
-        {% if item.temperature %}
-            <div class="temp">
-                {{ item.temperature }}°C — {{ item.conditions }}
-            </div>
-        {% else %}
-            <div style="color: red;">
-                Error fetching weather
-            </div>
-        {% endif %}
-    </div>
-{% endfor %}
-
+    <script>
+        document.getElementById('fetchDog').onclick = async () => {
+            const response = await fetch('/random-dog');
+            const data = await response.json();
+            document.getElementById('dogImage').src = data.url;
+        }
+    </script>
 </body>
 </html>
