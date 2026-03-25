@@ -41,8 +41,35 @@ def random_dog():
     response = requests.get(f"{DOG_API_URL}/images/search", headers=headers)
 
     if response.status_code == 200:
+        try:
+            with get_conn() as conn:
+                with conn.cursor() as cur:
+                    cur.execute("INSERT INTO dog_requests DEFAULT VALUES;")
+                conn.commit()
+        except Exception as e:
+            print(f"DB log failed: {e}")
+
         return jsonify(response.json()[0])
     return jsonify({"error": "Dog API failed"}), 500
+
+
+# ----------------------
+# STATS
+# ----------------------
+@app.route('/stats')
+def stats():
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT COUNT(*) FROM dog_requests;")
+                count = cur.fetchone()[0]
+        return jsonify({"total_dog_requests": count})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/stats-page')
+def stats_page():
+    return render_template("stats.html")
 
 
 # ----------------------
@@ -52,28 +79,22 @@ def random_dog():
 def status():
     uptime = round(time.time() - START_TIME, 2)
 
-    # ---- DB CHECK ----
     try:
         with get_conn() as conn:
             with conn.cursor() as cur:
                 cur.execute("SELECT NOW();")
                 db_time = cur.fetchone()[0]
-
         db_status = f"connected (time: {db_time})"
-
     except Exception as e:
         db_status = "database unavailable"
 
-    # ---- DOG API CHECK ----
     try:
         headers = {"x-api-key": DOG_API_KEY}
         r = requests.get(f"{DOG_API_URL}/breeds", headers=headers)
-
         if r.status_code == 200:
             api_status = "connected"
         else:
             api_status = "error"
-
     except Exception:
         api_status = "unavailable"
 
