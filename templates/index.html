@@ -60,6 +60,21 @@
         <img id="dogImage" src="" alt="Dog will appear here">
     </div>
 
+    <div style="margin-top: 20px;">
+    <select id="breedSelect" style="
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: none;
+        background: #2c2c3e;
+        color: white;
+        width: 220px;
+    ">
+        <option value="">All breeds (random)</option>
+    </select>
+    <button onclick="getDogByBreed()" style="margin-left: 10px;">🔍 Search</button>
+    </div>
+
     <script>
         async function getDog() {
             const res = await fetch('/random-dog');
@@ -68,6 +83,41 @@
         }
 
         getDog();
+
+    // Load breeds into dropdown on startup
+async function loadBreeds() {
+    const res = await fetch('/breeds');
+    const breeds = await res.json();
+    const select = document.getElementById("breedSelect");
+
+    breeds.forEach(breed => {
+        const option = document.createElement("option");
+        option.value = breed.id;
+        option.textContent = breed.name;
+        select.appendChild(option);
+    });
+}
+
+async function getDogByBreed() {
+    const breedId = document.getElementById("breedSelect").value;
+
+    let url = breedId ? `/random-dog-by-breed/${breedId}` : '/random-dog';
+    const res = await fetch(url);
+    const data = await res.json();
+    currentDogUrl = data.url;
+    document.getElementById("dogImage").src = data.url;
+}
+
+// Update getDog to also track currentDogUrl
+async function getDog() {
+    const res = await fetch('/random-dog');
+    const data = await res.json();
+    currentDogUrl = data.url;
+    document.getElementById("dogImage").src = data.url;
+}
+
+getDog();
+loadBreeds();
     </script>
 </body>
 </html>

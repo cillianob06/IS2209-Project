@@ -127,6 +127,39 @@ def health():
         "database": db_status,
     }), 200
 
+# ----------------------
+# Breed Filter
+# ----------------------
+
+@app.route('/breeds')
+def get_breeds():
+    headers = {"x-api-key": DOG_API_KEY}
+    response = requests.get(f"{DOG_API_URL}/breeds", headers=headers)
+    if response.status_code == 200:
+        breeds = [{"id": b["id"], "name": b["name"]} for b in response.json()]
+        return jsonify(breeds)
+    return jsonify({"error": "Could not fetch breeds"}), 500
+
+@app.route('/random-dog-by-breed/<int:breed_id>')
+def random_dog_by_breed(breed_id):
+    headers = {"x-api-key": DOG_API_KEY}
+    response = requests.get(f"{DOG_API_URL}/images/search?breed_ids={breed_id}&include_breeds=1", headers=headers)
+    if response.status_code == 200:
+        dog_data = response.json()[0]
+        breeds = dog_data.get("breeds", [])
+        breed_name = breeds[0]["name"] if breeds else "Unknown"
+
+        try:
+            with get_conn() as conn:
+                with conn.cursor() as cur:
+                    cur.execute("INSERT INTO dog_requests (breed) VALUES (%s);", (breed_name,))
+                conn.commit()
+        except Exception as e:
+            print(f"DB log failed: {e}")
+
+        return jsonify(dog_data)
+    return jsonify({"error": "Dog API failed"}), 500
+
 
 # ----------------------
 # RUN
