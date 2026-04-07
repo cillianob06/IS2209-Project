@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #1e1e2f;
+            background: linear-gradient(135deg, #1e1e2f, #3a3a5f);
             color: white;
             text-align: center;
             padding: 40px;
@@ -20,21 +20,21 @@
         .card {
             margin: 30px auto;
             width: 300px;
-            background: #2c2c3e;
+            background: #2f2f45;
             border-radius: 16px;
             padding: 30px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
         }
 
         .count {
             font-size: 64px;
             font-weight: bold;
-            color: #4CAF50;
+            color: #ff7b54;
         }
 
         .label {
             font-size: 16px;
-            color: #aaa;
+            color: #ccc;
             margin-top: 8px;
         }
 
@@ -45,8 +45,13 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            background: #5b8dee;
+            background: #4cc9f0;
             color: white;
+            transition: 0.2s ease;
+        }
+
+        button:hover {
+            opacity: 0.9;
         }
     </style>
 </head>
