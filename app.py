@@ -17,45 +17,37 @@ DOG_API_URL = "https://api.thedogapi.com/v1"
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 
-# ----------------------
-# DB CONNECTION
-# ----------------------
 def get_conn():
     return psycopg2.connect(DATABASE_URL)
 
 
-# ----------------------
-# INDEX
-# ----------------------
 @app.route('/')
 def index():
     return render_template("index.html")
 
 
-# ----------------------
-# DOG API
-# ----------------------
 @app.route('/random-dog')
 def random_dog():
     headers = {"x-api-key": DOG_API_KEY}
-    response = requests.get(f"{DOG_API_URL}/images/search", headers=headers)
+    response = requests.get(f"{DOG_API_URL}/images/search?include_breeds=1", headers=headers)
 
     if response.status_code == 200:
+        dog_data = response.json()[0]
+        breeds = dog_data.get("breeds", [])
+        breed_name = breeds[0]["name"] if breeds else "Unknown"
+
         try:
             with get_conn() as conn:
                 with conn.cursor() as cur:
-                    cur.execute("INSERT INTO dog_requests DEFAULT VALUES;")
+                    cur.execute("INSERT INTO dog_requests (breed) VALUES (%s);", (breed_name,))
                 conn.commit()
         except Exception as e:
             print(f"DB log failed: {e}")
 
-        return jsonify(response.json()[0])
+        return jsonify(dog_data)
     return jsonify({"error": "Dog API failed"}), 500
 
 
-# ----------------------
-# STATS
-# ----------------------
 @app.route('/stats')
 def stats():
     try:
@@ -67,14 +59,12 @@ def stats():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 @app.route('/stats-page')
 def stats_page():
     return render_template("stats.html")
 
 
-# ----------------------
-# STATUS (DB + API)
-# ----------------------
 @app.route("/status")
 def status():
     uptime = round(time.time() - START_TIME, 2)
@@ -107,9 +97,7 @@ def status():
         "environment": os.getenv("ENVIRONMENT", "development")
     })
 
-# ---------------------
-# HEALTH
-#----------------------
+
 @app.route("/health")
 def health():
     try:
@@ -127,9 +115,6 @@ def health():
         "database": db_status,
     }), 200
 
-# ----------------------
-# Breed Filter
-# ----------------------
 
 @app.route('/breeds')
 def get_breeds():
@@ -139,6 +124,7 @@ def get_breeds():
         breeds = [{"id": b["id"], "name": b["name"]} for b in response.json()]
         return jsonify(breeds)
     return jsonify({"error": "Could not fetch breeds"}), 500
+
 
 @app.route('/random-dog-by-breed/<int:breed_id>')
 def random_dog_by_breed(breed_id):
@@ -159,10 +145,6 @@ def random_dog_by_breed(breed_id):
 
         return jsonify(dog_data)
     return jsonify({"error": "Dog API failed"}), 500
-
-
-# FAVOURITES
-# ----------------------
 
 
 @app.route('/favourite', methods=['POST'])
@@ -198,9 +180,27 @@ def get_favourites():
 @app.route('/favourites-page')
 def favourites_page():
     return render_template("favourites.html")
-# ----------------------
-# RUN
-# ----------------------
+
+
+@app.route('/leaderboard')
+def leaderboard():
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT breed, COUNT(*) as count
+                    FROM dog_requests
+                    WHERE breed IS NOT NULL AND breed != 'Unknown'
+                    GROUP BY breed
+                    ORDER BY count DESC
+                    LIMIT 5;
+                """)
+                rows = cur.fetchall()
+        return jsonify([{"breed": row[0], "count": row[1]} for row in rows])
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
