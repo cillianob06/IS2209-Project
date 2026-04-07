@@ -85,7 +85,7 @@ def status():
                 cur.execute("SELECT NOW();")
                 db_time = cur.fetchone()[0]
         db_status = f"connected (time: {db_time})"
-    except Exception as e:
+    except Exception:
         db_status = "database unavailable"
 
     try:
