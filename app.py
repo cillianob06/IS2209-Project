@@ -29,7 +29,8 @@ def index():
 @app.route('/random-dog')
 def random_dog():
     headers = {"x-api-key": DOG_API_KEY}
-    response = requests.get(f"{DOG_API_URL}/images/search?include_breeds=1", headers=headers)
+    response = requests.get(f"{DOG_API_URL}/images/search", headers=headers, params={"include_breeds": 1, "has_breeds": 1, "limit": 1})
+    print(response.json())
 
     if response.status_code == 200:
         dog_data = response.json()[0]
@@ -128,12 +129,22 @@ def get_breeds():
 
 @app.route('/random-dog-by-breed/<int:breed_id>')
 def random_dog_by_breed(breed_id):
+    breed_name = request.args.get('breed_name', 'Unknown')
     headers = {"x-api-key": DOG_API_KEY}
-    response = requests.get(f"{DOG_API_URL}/images/search?breed_ids={breed_id}&include_breeds=1", headers=headers)
+
+    # Fetch dog image
+    response = requests.get(f"{DOG_API_URL}/images/search", headers=headers,
+                            params={"breed_id": breed_id, "include_breeds": 1, "limit": 1})
+
+    # Fetch breed details
+    breed_response = requests.get(f"{DOG_API_URL}/breeds/{breed_id}", headers=headers)
+
     if response.status_code == 200:
         dog_data = response.json()[0]
-        breeds = dog_data.get("breeds", [])
-        breed_name = breeds[0]["name"] if breeds else "Unknown"
+
+        # Inject breed info into response
+        if breed_response.status_code == 200:
+            dog_data["breeds"] = [breed_response.json()]
 
         try:
             with get_conn() as conn:
@@ -145,8 +156,6 @@ def random_dog_by_breed(breed_id):
 
         return jsonify(dog_data)
     return jsonify({"error": "Dog API failed"}), 500
-
-
 @app.route('/favourite', methods=['POST'])
 def add_favourite():
     data = request.get_json()
@@ -170,9 +179,9 @@ def get_favourites():
     try:
         with get_conn() as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT image_url, created_at FROM favourites ORDER BY created_at DESC;")
+                cur.execute("SELECT id, image_url, created_at FROM favourites ORDER BY created_at DESC;")
                 rows = cur.fetchall()
-        return jsonify([{"url": row[0], "saved_at": str(row[1])} for row in rows])
+        return jsonify([{"id": row[0], "url": row[1], "saved_at": str(row[2])} for row in rows])
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -197,6 +206,17 @@ def leaderboard():
                 """)
                 rows = cur.fetchall()
         return jsonify([{"breed": row[0], "count": row[1]} for row in rows])
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/favourite/<int:favourite_id>', methods=['DELETE'])
+def delete_favourite(favourite_id):
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("DELETE FROM favourites WHERE id = %s;", (favourite_id,))
+            conn.commit()
+        return jsonify({"message": "Deleted!"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

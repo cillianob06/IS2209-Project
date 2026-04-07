@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Dog Dashboard</title>
-<button onclick="getDog()">Get Random Dog</button>
-<button class="stats-btn" onclick="window.location.href='/stats-page'">📊 Stats</button>
-<button class="fav-btn" onclick="saveFavourite()">❤️ Favourite</button>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -65,19 +63,24 @@
 </head>
 
 <body>
-    <h1>🐶 Dog Explorer Dashboard</h1>
+    <h1>🐶 Dog Dashboard</h1>
     <p>Click below to discover random dogs and track usage stats</p>
 
-    <button onclick="getDog()">Get Random Dog</button>
-    <button class="stats-btn" onclick="window.location.href='/stats-page'">📊 Stats</button>
-    <button class="fav-btn" onclick="window.location.href='/favourites-page'">❤️ View Favourites</button>
+<button onclick="getDog()">Get Random Dog</button>
+<button class="stats-btn" onclick="window.location.href='/stats-page'">📊 Stats</button>
+<button class="fav-btn" onclick="saveFavourite()">❤️ Favourite</button>
 
-    <div class="card">
-        <img id="dogImage" src="" alt="Dog will appear here">
+
+<div class="card">
+    <img id="dogImage" src="" alt="Dog will appear here">
+    <div id="breedInfo" style="margin-top: 15px; text-align: left;">
+        <h3 id="breedName" style="color: white; margin: 0 0 8px 0;"></h3>
+        <p id="breedTemperament" style="color: #ccc; font-size: 14px; margin: 4px 0;"></p>
+        <p id="breedLifespan" style="color: #ccc; font-size: 14px; margin: 4px 0;"></p>
     </div>
-
+</div>
     <div style="margin-top: 20px;">
-    <select id="breedSelect" style="
+        <label for="breedSelect"></label><label for="breedSelect"></label><select id="breedSelect" style="
         padding: 10px;
         font-size: 16px;
         border-radius: 8px;
@@ -88,71 +91,77 @@
     ">
         <option value="">All breeds (random)</option>
     </select>
-    <button onclick="getDogByBreed()" style="margin-left: 10px;">🔍 Search</button>
+    <button onclick="getDogByBreed()" style="margin-left: 10px;">🔍 Search</button><button class="fav-btn" onclick="window.location.href='/favourites-page'">❤️ View Favourites</button>
     </div>
 
     <script>
-        let currentDogUrl = "";
+    let currentDogUrl = "";
+
+function updateBreedInfo(data) {
+    const breeds = data.breeds || [];
+    if (breeds.length > 0) {
+        const breed = breeds[0];
+        document.getElementById("breedName").textContent = breed.name || "";
+        document.getElementById("breedTemperament").textContent = breed.temperament ? `😊 ${breed.temperament}` : "";
+        document.getElementById("breedLifespan").textContent = breed.life_span ? `⏳ Life span: ${breed.life_span}` : "";
+    } else {
+        document.getElementById("breedName").textContent = "";
+        document.getElementById("breedTemperament").textContent = "";
+        document.getElementById("breedLifespan").textContent = "";
+    }
+}
 
 async function getDog() {
     const res = await fetch('/random-dog');
     const data = await res.json();
     currentDogUrl = data.url;
     document.getElementById("dogImage").src = data.url;
-}
-
-async function saveFavourite() {
-    if (!currentDogUrl) return;
-    const res = await fetch('/favourite', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: currentDogUrl })
-    });
-    const data = await res.json();
-    alert(data.message || "Saved!");
-}
-        async function getDog() {
-            const res = await fetch('/random-dog');
-            const data = await res.json();
-            document.getElementById("dogImage").src = data.url;
-        }
-
-        getDog();
-
-    // Load breeds into dropdown on startup
-async function loadBreeds() {
-    const res = await fetch('/breeds');
-    const breeds = await res.json();
-    const select = document.getElementById("breedSelect");
-
-    breeds.forEach(breed => {
-        const option = document.createElement("option");
-        option.value = breed.id;
-        option.textContent = breed.name;
-        select.appendChild(option);
-    });
+    updateBreedInfo(data);
 }
 
 async function getDogByBreed() {
-    const breedId = document.getElementById("breedSelect").value;
+    const select = document.getElementById("breedSelect");
+    const breedId = select.value;
+    const breedName = select.options[select.selectedIndex].text;
 
-    let url = breedId ? `/random-dog-by-breed/${breedId}` : '/random-dog';
+    const url = breedId ? `/random-dog-by-breed/${breedId}?breed_name=${encodeURIComponent(breedName)}` : '/random-dog';
     const res = await fetch(url);
     const data = await res.json();
     currentDogUrl = data.url;
     document.getElementById("dogImage").src = data.url;
+
+    // Use dropdown name if API doesn't return breed info
+    if (breedId && (!data.breeds || data.breeds.length === 0)) {
+        data.breeds = [{ name: breedName }];
+    }
+    updateBreedInfo(data);
 }
 
-// Update getDog to also track currentDogUrl
-async function getDog() {
-    const res = await fetch('/random-dog');
-    const data = await res.json();
-    currentDogUrl = data.url;
-    document.getElementById("dogImage").src = data.url;
-}
+    async function saveFavourite() {
+        if (!currentDogUrl) return;
+        const res = await fetch('/favourite', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: currentDogUrl })
+        });
+        const data = await res.json();
+        alert(data.message || "Saved!");
+    }
 
-getDog();
-loadBreeds();
-    </script>
+    async function loadBreeds() {
+        const res = await fetch('/breeds');
+        const breeds = await res.json();
+        const select = document.getElementById("breedSelect");
+        breeds.forEach(breed => {
+            const option = document.createElement("option");
+            option.value = breed.id;
+            option.textContent = breed.name;
+            select.appendChild(option);
+        });
+    }
+
+    getDog();
+    loadBreeds();
+</script>
 </body>
 </html>

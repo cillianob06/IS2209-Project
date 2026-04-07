@@ -63,10 +63,30 @@
             data.forEach(dog => {
                 const card = document.createElement("div");
                 card.className = "card";
-                card.innerHTML = `<img src="${dog.url}" alt="Favourite dog">`;
+                card.id = `card-${dog.id}`;
+                card.innerHTML = `
+        <img src="${dog.url}" alt="Favourite dog">
+        <button onclick="deleteFavourite(${dog.id})" style="
+            margin-top: 10px;
+            background: #e05555;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 12px;
+            cursor: pointer;
+            width: 100%;
+        ">🗑️ Remove</button>
+    `;
                 grid.appendChild(card);
             });
         }
+            async function deleteFavourite(id) {
+        const res = await fetch(`/favourite/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.message) {
+            document.getElementById(`card-${id}`).remove();
+        }
+    }
 
         loadFavourites();
     </script>
