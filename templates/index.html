@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Dog Dashboard</title>
-
+<button onclick="getDog()">Get Random Dog</button>
+<button class="stats-btn" onclick="window.location.href='/stats-page'">📊 Stats</button>
+<button class="fav-btn" onclick="saveFavourite()">❤️ Favourite</button>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -56,6 +58,9 @@
             object-fit: cover;
             border-radius: 12px;
         }
+        .fav-btn {
+    background: #e05555;
+}
     </style>
 </head>
 
@@ -65,12 +70,32 @@
 
     <button onclick="getDog()">Get Random Dog</button>
     <button class="stats-btn" onclick="window.location.href='/stats-page'">📊 Stats</button>
+    <button class="fav-btn" onclick="window.location.href='/favourites-page'">❤️ View Favourites</button>
 
     <div class="card">
         <img id="dogImage" src="" alt="Dog will appear here">
     </div>
 
     <script>
+        let currentDogUrl = "";
+
+async function getDog() {
+    const res = await fetch('/random-dog');
+    const data = await res.json();
+    currentDogUrl = data.url;
+    document.getElementById("dogImage").src = data.url;
+}
+
+async function saveFavourite() {
+    if (!currentDogUrl) return;
+    const res = await fetch('/favourite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: currentDogUrl })
+    });
+    const data = await res.json();
+    alert(data.message || "Saved!");
+}
         async function getDog() {
             const res = await fetch('/random-dog');
             const data = await res.json();

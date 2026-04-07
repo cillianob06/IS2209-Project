@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 import os
 import time
 import requests
@@ -127,6 +127,44 @@ def health():
         "database": db_status,
     }), 200
 
+# ----------------------
+# FAVOURITES
+# ----------------------
+
+
+@app.route('/favourite', methods=['POST'])
+def add_favourite():
+    data = request.get_json()
+    image_url = data.get('url')
+
+    if not image_url:
+        return jsonify({"error": "No URL provided"}), 400
+
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("INSERT INTO favourites (image_url) VALUES (%s);", (image_url,))
+            conn.commit()
+        return jsonify({"message": "Saved!"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/favourites')
+def get_favourites():
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT image_url, created_at FROM favourites ORDER BY created_at DESC;")
+                rows = cur.fetchall()
+        return jsonify([{"url": row[0], "saved_at": str(row[1])} for row in rows])
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/favourites-page')
+def favourites_page():
+    return render_template("favourites.html")
 # ----------------------
 # RUN
 # ----------------------
