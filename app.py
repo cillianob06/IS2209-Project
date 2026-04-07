@@ -107,6 +107,25 @@ def status():
         "environment": os.getenv("ENVIRONMENT", "development")
     })
 
+# ----------------------
+# HEALTH
+#-----------------------
+@app.route("/health")
+def health():
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT 1;")
+        db_status = "ok"
+    except Exception:
+        db_status = "unavailable"
+
+    status = "ok" if db_status == "ok" else "degraded"
+
+    return jsonify({
+        "status": status,
+        "database": db_status,
+    }), 200
 
 # ----------------------
 # RUN
