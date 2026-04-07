@@ -130,7 +130,7 @@ def health():
 # ----------------------
 # FAVOURITES
 # ----------------------
-from flask import Flask, jsonify, render_template, request
+
 
 @app.route('/favourite', methods=['POST'])
 def add_favourite():
