@@ -107,9 +107,9 @@ def status():
         "environment": os.getenv("ENVIRONMENT", "development")
     })
 
-# ----------------------
+# ---------------------
 # HEALTH
-#-----------------------
+#----------------------
 @app.route("/health")
 def health():
     try:
@@ -126,6 +126,7 @@ def health():
         "status": status,
         "database": db_status,
     }), 200
+
 
 # ----------------------
 # RUN
