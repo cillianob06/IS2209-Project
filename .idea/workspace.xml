@@ -4,6 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+    <list default="true" id="19ad18b4-31e7-45b9-8a88-5be66d672f6a" name="Changes" comment="feat: add health endpoint">
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
     <list default="true" id="19ad18b4-31e7-45b9-8a88-5be66d672f6a" name="Changes" comment="commit1">
       <change afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/FlaskProjectTutorialEmpty.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/FlaskProjectTutorialEmpty.iml" afterDir="false" />
@@ -109,6 +111,63 @@
       <option name="project" value="LOCAL" />
       <updated>1770801222490</updated>
     </task>
+    <task id="LOCAL-00002" summary="commit1">
+      <option name="closed" value="true" />
+      <created>1771863146187</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1771863146188</updated>
+    </task>
+    <task id="LOCAL-00003" summary="commit1">
+      <option name="closed" value="true" />
+      <created>1771924860133</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1771924860133</updated>
+    </task>
+    <task id="LOCAL-00004" summary="commit1">
+      <option name="closed" value="true" />
+      <created>1771926875477</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1771926875477</updated>
+    </task>
+    <task id="LOCAL-00005" summary="html and app changes">
+      <option name="closed" value="true" />
+      <created>1771933158711</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1771933158711</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Reworked app and cleaner HTML">
+      <option name="closed" value="true" />
+      <created>1774433411249</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1774433411249</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feat: add pytests for all endpoints">
+      <option name="closed" value="true" />
+      <created>1775560066776</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1775560066777</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feat: add health endpoint">
+      <option name="closed" value="true" />
+      <created>1775561395502</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1775561395503</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <option name="localTasksCounter" value="2" />
     <servers />
   </component>
@@ -117,6 +176,15 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="commit1" />
+    <MESSAGE value="html and app changes" />
+    <MESSAGE value="Reworked app and cleaner HTML" />
+    <MESSAGE value="feat: add pytests for all endpoints" />
+    <MESSAGE value="feat: add health endpoint" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add health endpoint" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/IS2209_Project$run_schema.coverage" NAME="run_schema Coverage Results" MODIFIED="1774434899317" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/IS2209_Project$IS2209_Project.coverage" NAME="IS2209_Project Coverage Results" MODIFIED="1774435876591" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <option name="LAST_COMMIT_MESSAGE" value="commit1" />
   </component>
 </project>
