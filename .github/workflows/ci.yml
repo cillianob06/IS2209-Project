@@ -15,7 +15,9 @@ jobs:
           python-version: 3.11
       - name: Install dependencies
         run: pip install -r requirements.txt
+      - name: Lint with ruff
+        run: pip install ruff && ruff check .
+      - name: Run tests with coverage
+        run: pip install pytest pytest-cov && pytest tests/ --cov=app --cov-report=term-missing
       - name: Build Docker Image
         run: docker build -t test-image .
-
-
