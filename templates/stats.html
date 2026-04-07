@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dog Dashboard - Stats</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1e1e2f;
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .card {
+            margin: 30px auto;
+            width: 300px;
+            background: #2c2c3e;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .count {
+            font-size: 64px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .label {
+            font-size: 16px;
+            color: #aaa;
+            margin-top: 8px;
+        }
+
+        button {
+            margin-top: 30px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #5b8dee;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>📊 Stats</h1>
+
+    <div class="card">
+        <div class="count" id="count">...</div>
+        <div class="label">Total dog requests (All-Time)</div>
+    </div>
+
+    <button onclick="window.location.href='/'">← Back</button>
+
+    <script>
+        async function loadStats() {
+            const res = await fetch('/stats');
+            const data = await res.json();
+            document.getElementById("count").textContent = data.total_dog_requests;
+        }
+
+        loadStats();
+    </script>
+</body>
+</html>

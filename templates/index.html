@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dog Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1e1e2f;
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #4CAF50;
+            color: white;
+            margin: 5px;
+        }
+
+        .stats-btn {
+            background: #5b8dee;
+        }
+
+        .card {
+            margin: 30px auto;
+            width: 400px;
+            background: #2c2c3e;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🐶 Dog Dashboard</h1>
+
+    <button onclick="getDog()">Get Random Dog</button>
+    <button class="stats-btn" onclick="window.location.href='/stats-page'">📊 Stats</button>
+
+    <div class="card">
+        <img id="dogImage" src="" alt="Dog will appear here">
+    </div>
+
+    <script>
+        async function getDog() {
+            const res = await fetch('/random-dog');
+            const data = await res.json();
+            document.getElementById("dogImage").src = data.url;
+        }
+
+        getDog();
+    </script>
+</body>
+</html>
