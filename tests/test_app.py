@@ -3,15 +3,11 @@ from unittest.mock import patch, MagicMock
 import sys
 import os
 
-# Make sure app.py can be imported from the parent directory
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from app import app
 
 
-# ----------------------
-# TEST CLIENT SETUP
-# ----------------------
 @pytest.fixture
 def client():
     app.config["TESTING"] = True
@@ -19,17 +15,11 @@ def client():
         yield client
 
 
-# ----------------------
-# INDEX
-# ----------------------
 def test_index_returns_200(client):
     response = client.get("/")
     assert response.status_code == 200
 
 
-# ----------------------
-# RANDOM DOG
-# ----------------------
 def test_random_dog_returns_dog_data(client):
     mock_response = MagicMock()
     mock_response.status_code = 200
@@ -58,9 +48,6 @@ def test_random_dog_returns_error_when_api_fails(client):
         assert "error" in data
 
 
-# ----------------------
-# STATS
-# ----------------------
 def test_stats_returns_count(client):
     with patch("app.get_conn") as mock_conn:
         mock_cursor = MagicMock()
@@ -81,9 +68,6 @@ def test_stats_returns_error_when_db_fails(client):
         assert "error" in data
 
 
-# ----------------------
-# STATUS
-# ----------------------
 def test_status_returns_expected_fields(client):
     mock_db_response = MagicMock()
     mock_cursor = MagicMock()
@@ -133,9 +117,6 @@ def test_status_api_unavailable(client):
         assert data["dog_api"] == "unavailable"
 
 
-# ----------------------
-# STATS PAGE
-# ----------------------
 def test_stats_page_returns_200(client):
     response = client.get("/stats-page")
     assert response.status_code == 200
