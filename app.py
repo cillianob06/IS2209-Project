@@ -4,7 +4,13 @@ import time
 import requests
 import psycopg2
 from dotenv import load_dotenv
+import logging
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(message)s'
+)
+logger = logging.getLogger(__name__)
 load_dotenv()
 
 app = Flask(__name__)
@@ -30,7 +36,6 @@ def index():
 def random_dog():
     headers = {"x-api-key": DOG_API_KEY}
     response = requests.get(f"{DOG_API_URL}/images/search", headers=headers, params={"include_breeds": 1, "has_breeds": 1, "limit": 1})
-    print(response.json())
 
     if response.status_code == 200:
         dog_data = response.json()[0]
@@ -43,7 +48,7 @@ def random_dog():
                     cur.execute("INSERT INTO dog_requests (breed) VALUES (%s);", (breed_name,))
                 conn.commit()
         except Exception as e:
-            print(f"DB log failed: {e}")
+            logger.error(f"DB log failed: {e}")
 
         return jsonify(dog_data)
     return jsonify({"error": "Dog API failed"}), 500
@@ -152,7 +157,7 @@ def random_dog_by_breed(breed_id):
                     cur.execute("INSERT INTO dog_requests (breed) VALUES (%s);", (breed_name,))
                 conn.commit()
         except Exception as e:
-            print(f"DB log failed: {e}")
+            logger.error(f"DB log failed: {e}")
 
         return jsonify(dog_data)
     return jsonify({"error": "Dog API failed"}), 500
